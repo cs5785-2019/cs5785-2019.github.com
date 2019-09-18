@@ -1,0 +1,599 @@
+\documentclass[10pt]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer,mathtools}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+\newcommand{\expect}{\mathbb{E}}
+\newcommand{\var}{\operatorname{Var}}
+
+\title{Math Review Session}
+\subtitle{CS5785, 2019 Fall}
+% \date{\today}
+\date{}
+\author{Yichun Hu, Xiaojie Mao}
+\institute{Cornell Tech, Cornell Unviersity}
+% \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents%[hideallsubsections]
+\end{frame}
+
+\section[Linear Algebra]{Linear Algebra}
+\begin{frame}{Matrix and Vector}
+\begin{itemize}
+    \item Vector: 
+    \begin{align*}
+        a = \begin{bmatrix}1 \\ 2  \\ 3 \end{bmatrix}, ~~~ b = \begin{bmatrix}1 & 2  & 3 \end{bmatrix} 
+    \end{align*}
+    \item Matrix: 
+    \begin{align*}
+        A = \begin{bmatrix}1 & 4 & 7 \\ 2 & 5 & 8  \\  3 & 6 & 9 \end{bmatrix}.
+    \end{align*}
+    \item Vectorize a matrix: 
+        \[
+            \operatorname{vec}(A) = \begin{bmatrix} 1 \\ 2 \\ 3 \\ 4 \\ \vdots \\ 9 \end{bmatrix}. 
+        \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Vector Operation}
+    For two column vectors $v, u \in \mathbb{R}^n$, 
+    \begin{itemize}
+        \item \textbf{Inner product}: $u \cdot v = u^\top v = \sum_{i = 1}^n u_iv_i$. 
+        \item \textbf{Orthogonal vectors}: $u \cdot v = 0$. 
+        \item \textbf{Norm}: $\|u\| = \sqrt{u^\top u} = \sqrt{\sum_{i = 1}^n u_i^2}$.
+        \item \textbf{Euclidean distance}: $d(u, v) = \|u - v\| = \sqrt{\sum_{i = 1}^n (u_i - v_i)^2}$. 
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Matrix Operation}
+    \begin{itemize}
+        \item \textbf{Transpose}. For $A \in \mathbb{R}^{m \times n}$, $A^\top$ is a $n \times m$ matrix:
+        \[
+            (A^\top)_{ij} = A_{ji}. 
+        \]
+        \item \textbf{Matrix addition}. For $A \in \mathbb{R}^{m \times n}$, $B \in \mathbb{R}^{m \times n}$, $C = A + B$ is a $m \times n$ matrix: for $1 \le i \le m$ and $1 \le j \le n$,
+        \[
+            C_{ij} =  A_{ij} + B_{ij}. 
+        \]
+        \item \textbf{Matrix Multiplication}. For $A \in \mathbb{R}^{m \times n}$, $B \in \mathbb{R}^{n \times p}$, $C = AB$ is a $m \times p$ matrix: for $1 \le i \le m$ and $1 \le j \le n$,
+        \[
+            C_{ij} = \sum_{k = 1}^n A_{ik}B_{kj} = A_{i, :} \cdot B_{:, j}
+        \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Matrix Operation}
+    \begin{itemize}
+        \item \textbf{Matrix inverse}. If $A$ is square $(n \times n)$, and invertible, then $A^{-1}$ is the unique $n \times n$ matrix such that 
+        \[
+            AA^{-1} = A^{-1}A = I.
+        \]
+        \item \textbf{Matrix trace}.  If $A$ is square $(n \times n)$, then its trace is 
+        \[
+            \operatorname{tr}(A) = \sum_{i = 1}^n A_{ii}.
+        \]
+        \item \textbf{Frobenius norm}: for a matrix $A \in \mathbb{R}^{m \times n}$, 
+        \[
+            \|A\|_F = \sqrt{\sum_{i=1}^m \sum_{j = 1}^n A_{ij}^2} = \sqrt{\operatorname{tr}(A^\top A)} = \|\operatorname{vec}{(A)}\|.
+        \]
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Properties of Matrix Operation}
+    \begin{itemize}
+        \item Transpose:
+            \begin{itemize}
+                \item $(AB)^\top = B^\top A^\top$. 
+                \item $(ABC)^\top = C^\top B^\top A^\top$.
+                \item $(A + B)^\top = A^\top + B^\top$. 
+            \end{itemize}
+        \item Multiplication:
+            \begin{itemize}
+                \item Associative: $(AB)C = A(BC)$.
+                \item Distributive: $(A + B)C = AC + BC$. 
+                \item Non-commutative: $AB \ne BA$ in general. 
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Properties of Matrix Operation}
+\begin{itemize}
+    \item Inverse:
+        \begin{itemize}
+                \item $(AB)^{-1} = B^{-1}A^{-1}$. 
+                \item $(ABC)^{-1} = C^{-1}B^{-1}A^{-1}$. 
+                \item $(A^{-1})^{-1} = A$.
+                \item $(A^{-1})^\top = (A^\top)^{-1}$. 
+        \end{itemize}
+    \item Trace:
+        \begin{itemize}
+                \item $\operatorname{tr}(AB) = \operatorname{tr}(BA)$.
+                \item $\operatorname{tr}(ABC) = \operatorname{tr}(CAB) = \operatorname{tr}(BCA)$.
+        \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Special matrices}
+For $A \in \mathbb{R}^{n \times n}$,
+\begin{itemize}
+    \item Diagonal matrix: $A_{ij} = 0$ for any $i \ne j$. 
+    \item Symmetric (Hermitian) matrix: $A = A^\top$ or $A_{ij} = A_{ji}$.
+    \item Orthogonal matrix: $A^\top = A^{-1}$. 
+        \begin{itemize}
+            \item $AA^\top = A^\top A = I$. 
+            \item Rows and Columns are  orthogonal unit vectors, namely, for $i \ne j$,
+            \[A_{i, :} \cdot A_{j, :} = 0, ~~ A_{:, i}\cdot A_{:, j} = 0,\]
+            and for any $i$,
+            \[A_{i, :} \cdot A_{i, :} = 1, ~~ A_{:, i}\cdot A_{:, i} = 1.\]
+        \end{itemize}
+    \item Positive semidefinite matrix: for any $x \in \mathbb{R}^n$ with $x \ne 0$, 
+    \[
+        x^\top A x = \sum_{i = 1}^n\sum_{j = 1}^n A_{ij}x_i x_j \ge 0.
+    \]
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Eigenvalues and Eigenvectors}
+For matrix $A \in \mathbb{R}^{n \times n}$, and nonzero vector $u \in \mathbb{R}^n$ ($u \ne 0$) such that 
+\[
+    Au = \lambda u,
+\]
+$u$ is an eigenvector of $A$, and $\lambda$ is the corresponding eigenvalue.  
+\end{frame}
+
+\begin{frame}{Spectral decomposition theorem}
+    If $A \in \mathbb{R}^{n \times n}$ is a real symmetric matrix, then 
+    \[
+    A = U\Lambda U^\top \Leftrightarrow A = \sum_{i = 1}^n \lambda_i u_i u_i^\top \Leftrightarrow U^\top A U = \Lambda 
+    \]
+    where 
+    \begin{itemize}
+        \item $U \in \mathbb{R}^{n \times n}$ is an orthogonal matrix whose columns are eigenvectors of $A$, i.e., $U_{:, i}$ and $U_{:, j}$ are orthogonal unit eigenvectors for $i \ne j$. 
+        \item $\Lambda$ is a diagonal matrix whose entries are the corresponding eigenvalues. 
+    \end{itemize}
+    \textbf{Remark}:
+    \begin{itemize}
+        \item $\operatorname{tr}(A) = \sum_{i = 1}^n \lambda_i$.
+        \item Real symmetric $A$ is positive semidefinite $\Leftrightarrow$ $\lambda_i \ge 0$ for any $i = 1, \dots, n$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Singular Value Decomposition (SVD)}
+    For $A \in \mathbb{R}^{m \times n}$, its singular value decomposition is 
+    \[
+        A = U\Sigma V^\top  \Leftrightarrow A = \sum_{i = 1}^r \sigma_i u_iv_i^\top \Leftrightarrow U^\top A V = \Sigma
+    \]
+    where 
+    \begin{itemize}
+        \item $U \in \mathbb{R}^{m \times r}$ is an orthogonal matrix whose columns $\{u_i\}_{i = 1}^r$ are the left singular vectors;
+        \item $V \in \mathbb{R}^{r \times n}$ is an orthogonal matrix whose columns $\{v_i\}_{i = 1}^r$ are the right singular vectors;
+        \item $\Sigma \in \mathbb{R}^{r \times r}$ is a diagonal matrix whose diagonal elements $\{\sigma_i\}_{i = 1}^r$ are singular values. 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Singular Value Decomposition}
+    \textbf{Remark}:
+    \begin{itemize}
+        \item $r$ is the rank of matrix $A$;
+        \item The maximum singular value $\sigma_{\max}(A)$ is called the spectral norm of $A$, which we denote as $\|A\|_2$. 
+        \item Connection between SVD and eigen-decomposion. 
+        \begin{align*}
+            A = U\Sigma V^\top &\Rightarrow AA^\top = U\Sigma^2 U^\top, \\
+             A = U\Sigma V^\top &\Rightarrow A^\top A = V\Sigma^2 V^\top.
+        \end{align*}
+        Thus 
+            \begin{itemize}
+                \item The columns of $U$ are eigenvectors of $AA^\top$, and the columns of $V$ are eigenvectors of $A^\top A$;
+                \item $\sigma_i^2(A) = \lambda_i(AA^\top) = \lambda_i(A^\top A)$.
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{Calculus}
+
+
+\begin{frame}{Univariate Calculus}
+ \begin{itemize}
+    \item Polynomial: $\frac{\partial}{\partial x} x^n = nx^{n-1}.$
+    \item Exponential: $\frac{\partial}{\partial x} \exp(x) = \exp(x).$
+    \item Logarithm: $\frac{\partial}{\partial x} \log(x) = \frac{1}{x}.$
+    \item Sum: $\frac{\partial}{\partial x} (f(x)+g(x)) = \frac{\partial}{\partial x}f(x) + \frac{\partial}{\partial x} g(x).$
+    \item Multiplication: $\frac{\partial}{\partial x} (f(x)\cdot g(x)) = f(x)\frac{\partial}{\partial x} g(x) + g(x)\frac{\partial}{\partial x}f(x).$
+    \item Chain Rule: $\frac{\partial}{\partial x} (f(g(x))) = f'(g(x))\cdot g'(x).$
+\end{itemize}   
+\end{frame}
+
+\begin{frame}{Multivariate Calculus}
+Let $f$ be a function of $x_1, x_2, \dots, x_n$.
+\begin{itemize}
+    \item \textbf{Partial derivative} $\frac{\partial}{\partial x_i} f(x_1,\dots, x_n)$: treat other variables as constants and take derivative w.r.t. $x_i$.
+    \[
+        \frac{\partial}{\partial x}f \coloneqq \begin{pmatrix} 
+\frac{\partial f}{\partial x_1}  \\
+\dots \\
+\frac{\partial f}{\partial x_n}  
+\end{pmatrix},  \frac{\partial}{\partial x^\top}f \coloneqq \begin{pmatrix} 
+\frac{\partial f}{\partial x_1}  &
+\dots &
+\frac{\partial f}{\partial x_n}  
+\end{pmatrix}
+    \]
+    \item \textbf{Gradient} of $f$ with respect to $x$: $\nabla_x f \coloneqq \frac{\partial}{\partial x}f$.
+    \item \textbf{Hessian matrix} of $f$: $\mathcal{H}$ is a $n\times n$ matrix with $\mathcal{H}_{ij} = \frac{\partial^2}{\partial x_i\partial x_j}f$, or 
+    \[
+        \mathcal{H} = \frac{\partial^2}{\partial x\partial x^\top}f.
+    \]
+\end{itemize}
+
+Let $f = (f_1,\dots, f_m)$ be a multivariate vector function of $x_1, \dots, x_n$.
+\begin{itemize}
+    \item \textbf{Jacobian matrix} of $f$: $\mathcal{J}$ is a $m\times n$ matrix with $\mathcal{J}_{ij} = \frac{\partial f_i}{\partial x_j}$. The $i$-th row of $\mathcal{J}$ is $\frac{\partial }{\partial x^\top}f_i$.
+\end{itemize}    
+\end{frame}
+
+\begin{frame}{Multivariate Calculus Rules}
+Here $\textbf{a}$ and $\textbf{A}$ are vector/matrix that do not depend on $\textbf{x}=(x_1,\dots,x_n)^\intercal$.
+\begin{itemize}
+    \item $\frac{\partial}{\partial x} \textbf{a} = \textbf{0}$;
+    % $\frac{\partial \textbf{a}}{\partial \textbf{x}} = \textbf{0}$.
+    \item $\frac{\partial}{\partial x} \textbf{a}^\intercal \textbf{x} = \frac{\partial}{\partial x} \textbf{x}^\intercal \textbf{a} = \textbf{a}$;
+    % $\frac{\partial \textbf{a}^\intercal \textbf{x}}{\partial \textbf{x}} = \frac{\partial \textbf{x}^\intercal \textbf{a}}{\partial \textbf{x}} = \textbf{a}$.
+    \item $\frac{\partial}{\partial x} (\textbf{x}^\intercal \textbf{a})^2 = 2  \textbf{a}\textbf{a}^\intercal \textbf{x}$;
+    % $\frac{\partial (\textbf{x}^\intercal \textbf{a})^2}{\partial \textbf{x}} = 2  \textbf{a}\textbf{a}^\intercal \textbf{x}$.
+    \item $\frac{\partial}{\partial x} \textbf{A}\textbf{x} = \textbf{A}^\top$;
+    % $\frac{\partial \textbf{A}\textbf{x}}{\partial \textbf{x}} = \textbf{A}^\top$.
+    \item $\frac{\partial}{\partial x} \textbf{x}^\intercal\textbf{A} = \textbf{A}$;
+    % $\frac{\partial \textbf{x}^\intercal\textbf{A}}{\partial \textbf{x}} = \textbf{A}$.
+    \item $\frac{\partial}{\partial x} \textbf{x}^\top \textbf{A}\textbf{x} = (\textbf{A}^\intercal+\textbf{A})\textbf{x}$.
+    % $\frac{\partial \textbf{x}^\intercal\textbf{A}\textbf{x}}{\partial \textbf{x}} = (\textbf{A}^\intercal+\textbf{A})\textbf{x}$.
+\end{itemize}
+
+For a detailed multivariate derivatives list, see \url{https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf}.
+\end{frame}
+
+\begin{frame}{Example: Least Squares}
+ Let’s apply the equations to derive the least squares equations.
+Suppose we are given matrices $A\in \mathbb{R}^{m\times n}$ (for simplicity we assume $A$ is full rank so that $(A^\top A)^{-1}$ exists) and a vector $b\in \mathbb{R}^m$ such that $b\not\in \mathcal{R}(A)$. In this situation we will not be able to find a vector $x\in \mathbb{R}^n$ such that $Ax=b$, so instead we want to find a vector $x$ such that $Ax$ is as close as possible to $b$, as measured by the square of the Euclidean norm $||Ax - b||^2_2$.
+
+Using the fact that $||x||^2_2 = x^\intercal x$, we have
+$$||Ax - b||^2_2 = (Ax - b)^\intercal(Ax - b) = x^\intercal A^\intercal Ax - 2b^\intercal Ax + b^\intercal b.$$
+Taking the gradient with respect to $x$ we have
+$$\nabla_x(x^\intercal A^\intercal Ax - 2b^\intercal Ax + b^\intercal b) = \nabla_x x^\intercal A^\intercal Ax - \nabla_x 2b^\intercal Ax + \nabla_x b^\intercal b = 2A^\intercal Ax - 2A^\intercal b.$$
+Setting this last expression equal to zero and solving for $x$ gives the normal equations $x= (A^\intercal A)^{-1}A^\intercal b$.
+\end{frame}
+
+
+\section{Probability}
+\begin{frame}{Sample space}
+    \begin{itemize}
+        \item \textbf{Sample space} $\Omega$ is the set of all possible outcomes of a random experiment;
+        \item \textbf{Event} $A$ is a subset of $\Omega$, and the collection of all possible events is denoted as $\mathcal{F}$;
+        \item \textbf{Probability measure} is a function $P: \mathcal{F} \to \mathbb{R}$ that maps an event into a real number which indicates the chance at which this event happens in the experiment.
+        \item $A$ and $B$ are \textbf{independent events} if 
+        \[
+            P(A \cap B) = P(A)P(B). 
+        \]
+    \end{itemize}
+    Example:  consider tossing a six-sided die, 
+    \begin{itemize}
+        \item $\Omega = \{1, 2, 3, 4, 5, 6\}$;
+        \item $A = \{1, 2, 3, 4\} \subset \Omega$ is an event;
+        \item $P(A) = \frac{4}{6}$ for an even die.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Random Variable}
+    \begin{itemize}
+        \item A \textbf{random variable} $X$ is a function $X: \Omega \to \mathbb{R}$. 
+        \item Discrete random variable can only take countably many values, and 
+        \[
+            P(X = x) = P(\{w: X(w) = x\}).
+        \]
+        \item Continuous random variable can take uncountably many values, and 
+        \[
+            P(a \le X \le b) = P(\{w: a \le X(w) \le b\}).
+        \]
+    \end{itemize}
+    Example: If the die gives value larger than 4, we set $X = 1$, and otherwise $X = 0$.
+    \begin{itemize}
+        \item $P(X = 1) = P(\{5, 6\}) = \frac{2}{6}$;
+        \item $P(X = 0) = P(\{1, 2, 3, 4\}) = \frac{4}{6}$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Distribution}
+    \begin{itemize}
+        \item A \textbf{cumulative distribution function} (CDF) of a random variable $X$ (either continuous or discrete) is a function $F_X: \mathbb{R} \to [0, 1]$ such that
+        \[
+            F_X(x) = P(X \le x).
+        \]
+        \item A \textbf{probability mass function} (PMF) of a \textit{discrete} random variable $X$ is a function $p_X: \mathbb{R} \to [0, 1]$ such that 
+        \[
+            p_X(x) = P(X = x).
+        \]
+        \item A \textbf{probability density function} (PDF) of a \textit{continuous} random variable is a function $f_X: \mathbb{R} \to \mathbb{R}$ given by the derivative of CDF:
+        \[
+            f_X(x) = \frac{\partial F_X(x)}{\partial x}. 
+        \]
+        As a result, 
+        \[
+            P(a \le X \le b) = \int_{a}^b f_X(x) dx.
+        \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Expectation}
+    \begin{itemize}
+    \item For a \textit{discret} random variable $X$ with PMF $p_X$ and an aribitrary function $g: \mathbb{R} \to \mathbb{R}$, $g(X)$ is also a random variable whose expectation is given by
+    \[
+        \expect[g(X)] = \sum_{x}p_X(x)g(x).
+    \]
+    \item For a \textit{continuous} random variable $X$ with PDF $f_X$, $g(X)$ is also a random variable whose expectation is given by
+    \[
+        \expect[g(X)] = \int_{-\infty}^\infty g(x)f_X(x)dx.
+    \]
+    \item For two functions $g_1$ and $g_2$, 
+    \[
+        \expect[g_1(X) + g_2(X)] = \expect[g_1(X)] + \expect[g_2(X)]
+    \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Variance}
+    The variance of a random variable $X$ is 
+    \[
+        \var[X] = \expect\big[(X - \expect[X])^2\big] = \expect[X^2] - (\expect[X])^2, 
+    \]
+    and the associated standard deviation is 
+    \[
+        \sigma(X) = \sqrt{\var[X]}.
+    \]
+\end{frame}
+
+\begin{frame}{Exercise: uniform distribution}
+    Consider $X \sim \operatorname{uniform}(0, 1)$ whose PDF is 
+   \begin{equation*}
+        f_X(x)=\left\{
+        \begin{aligned}
+        1, &~~ 0 \le x \le 1\\
+        0, &~~ \text{otherwise}
+        \end{aligned}
+        \right.
+    \end{equation*}
+    What's the expectation and variance of $X$?
+    
+    Hint:
+    \begin{itemize}
+        \item $\expect[X] = \int_{-\infty}^\infty xf_X(x)dx$;
+        \item $\var[X] = \expect[X^2] - (\expect[X])^2$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Common distributions}
+    \begin{itemize}
+        \item \textbf{Normal distribution}: $X \sim \mathcal{N}(\mu, \sigma^2)$ has PDF
+        \[
+            f_X(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\{-\frac{1}{2\sigma^2}(x - \mu)^2\}.
+        \]
+        \begin{itemize}
+            \item $\expect[X] = \mu$ and $\var[X] = \sigma^2$. 
+        \end{itemize}
+        \item \textbf{Bernoulli distribution}: $X \sim \operatorname{Bernoulli}(p)$ with $0 \le p \le 1$ has PMF
+        \begin{equation*}
+        P_X(x)=\left\{
+        \begin{aligned}
+        p, &~~ x = 1 \\
+        1-p, &~~ x = 0 
+        \end{aligned}
+        \right.
+        \end{equation*}
+        \begin{itemize}
+            \item $\expect[X] = p$ and $\var[X] = p(1 - p)$. 
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Joint distributions}
+    \begin{itemize}
+        \item For two random variables $X$ and $Y$, their joint cumulative distribution function is 
+        \[
+            F_{X, Y}(x, y) = P(X \le x, Y \le y).
+        \]
+        \item For two \textit{discrete} random variables $X$ and $Y$, their joint probability mass function is 
+        \[
+            p_{X, Y}(x, y) = P(X = x, Y = y). 
+        \]
+        \item For two \textit{continuous} random variable $X$ and $Y$, their joint probability density function is 
+        \[
+            f_{X, Y}(x, y) = \frac{\partial^2 F_{X, Y}(x, y)}{\partial x \partial y}, 
+        \]
+        so that for a set $A \in \mathbb{R}^2$ and a function $g: \mathbb{R}^2 \to \mathbb{R}$,
+        \begin{align*}
+            P((X, Y) \in A) &= \iint_{(x, y) \in A}f_{X, Y}(x, y) dxdy, \\
+            \expect[g(X, Y)] &= \iint g(x, y)f_{X, Y}(x, y)dxdy.
+        \end{align*}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Independence}
+    \begin{itemize}
+        \item     Random variables $X, Y$ are independent if for any possible values $x, y$
+    \[
+        f_{X, Y}(x, y) = f_{X}(x)f_Y(y), ~~\text{for continuous}~~ X, Y, 
+    \]
+    \[
+        \text{or}~~ p_{X, Y}(x, y) = p_X(x)p_Y(y), ~~\text{for discrete}~~ X, Y.
+    \]
+        \item For any set $A = \{(x, y): x \in A_1, y \in A_2\}  \subset \mathbb{R}^2$, independent random variables $X, Y$ satisfy that 
+        \[
+            P((X, Y) \in A) = P(X \in A_1)P(Y \in A_2). 
+        \]
+        or events $\{w: X(w) \in A_1\}$ and $\{w: Y(w) \in A_2\}$ are independent events for any $A_1$ and $A_2$. 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Exercise: Independence}
+    For example, consider toss two coins consecutively, and $X_1 = 1$ if the first coin heads up, otherwise $X_1 = 0$; $X_2 = 1$ if the second coin heads up, otherwise $X_2 = 0$. 
+        \begin{itemize}
+            \item $\Omega = \{(T, T), (H, H), (T, H), (H, T)\}$.
+            \item $P(X_1 = 1, X_2 = 1) = P(\{(H, H)\}) = \frac{1}{4}$;
+            \item $P(X_1 = 1) = P(\{(H, T), (H, H)\}) = \frac{1}{2}$;
+            \item $P(X_2 = 1) = P(\{(T, H), (H, H)\}) = \frac{1}{2}$.
+        \end{itemize}
+        Thus 
+        \[
+            P(X_1 = 1, X_2 = 1) = \frac{1}{4} = \frac{1}{2} \times \frac{1}{2} = P(X_1 = 1)P(X_2 = 1)..
+        \]
+        Similarly, we can show that
+        \begin{align*}
+            P(X_1 = 1, X_2 = 0) &= P(X_1 = 1)P( X_2 = 0) \\
+            P(X_1 = 0, X_2 = 1) &= P(X_1 = 0)P( X_2 = 1) \\
+            P(X_1 = 0, X_2 = 0) &= P(X_1 = 0)P( X_2 = 0).
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Conditional Probability}
+Let $A, B$ be two events. 
+\begin{itemize}
+    \item The conditional probability of $A$ given $B$ is defined as:
+    \[
+    {P}(A|B) = \frac{{P}(A\cap B)}{{P}(B)}.
+    \]
+ \item If $A$ is independent of $B$, we have ${P}(A|B) = {P}(A)$, as 
+ \[
+    P(A \mid B) = \frac{P(A \cap B)}{P(B)} = \frac{P(A)P(B)}{P(B)} = P(A).
+ \]
+ \item \textbf{Bayes Rule}: 
+ \[
+ P(A|B) = \frac{P(B|A)P(A)}{P(B)}.
+ \]
+ \item \textbf{Chain Rule}: 
+ \begin{align*}
+     &\qquad\qquad\qquad\qquad\qquad P(A_1\cap A_2 \cap \dots \cap A_n) \\
+     &= P(A_1) P(A_2|A_1)P(A_3|A_2\cap A_1)\dots P(A_n|A_{n-1}\cap \dots\cap A_1).
+ \end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: conditional probability}
+    Consider toss a die once, and we define events 
+    \[
+        A = \{\text{The value is larger than 4}\}, B = \{\text{The value is larger than 2}\}.
+    \]
+    Then 
+    \begin{align*}
+        P(A \mid B) 
+            &= \frac{P(A \cap B)}{P(B)} \\
+            &= \frac{P(\{5, 6\} \cap \{3, 4, 5, 6\})}{P(\{3,4, 5, 6\})} \\
+            &= \frac{\frac{2}{6}}{\frac{4}{6}} = \frac{1}{2}.
+    \end{align*}
+\end{frame}
+
+\begin{frame}{Conditional Distribution}
+\textbf{Conditional Density.} The conditional probability density function of continuous random variable $X$ given $Y=y$ is 
+\[f_X(x|Y=y) = \frac{f_{X,Y}(x,y)}{f_Y(y)}.\]
+
+  \textbf{Conditional Expectation.} The conditional expectation of $X$ given $Y = y$ is 
+  \[
+    \mathbb{E}(X|Y=y) = \int_{-\infty}^{\infty} x f_X(x|Y=y)dx \triangleq g(y)
+  \]
+% Plus, $\mathbb{E}(X|Y) = g(Y)$ is a random variable because $g(Y)$ is a function of random variable $Y$. 
+
+\textbf{Conditional Variance.} The conditional variance of random variable $X$ given $Y = y$ is 
+\[
+\var[X|Y=y] = \mathbb{E}[(X-\mathbb{E}(X|Y=y))^2|Y=y]\triangleq h(y).
+\] 
+% Plus, $\var(X|Y) = h(Y)$ is also a random variable. 
+
+\textbf{Both $\expect[X \mid Y]$ and $\var(X|Y)$ are random variables, and their distributions are determined by the distribution of $Y$.}
+\end{frame}
+
+\begin{frame}{Properties of Conditional Distributions}
+   \textbf{Iterated Expectation.}
+Recall that $\mathbb{E}(X|Y)$ is a function of $Y$, i.e., a random variable. The law of iterative expectation states that
+$$\mathbb{E}[\mathbb{E}(X|Y)] = \mathbb{E}(X).$$
+
+\textbf{Law of Total Variance.}
+Recall that $\mathbb{E}(X|Y)$ and $Var(X|Y)$ are both random variables that are functions of $Y$. We have
+$$Var(Y) = \mathbb{E}[Var(X|Y)] + Var[\mathbb{E}(X|Y)].$$ 
+\end{frame}
+
+\begin{frame}{Example: conditional distribution}
+Assume we throw two six-sided dice.
+
+\begin{itemize}
+    \item What is the probability that the total of two dice will be greater than $8$ given that the first die is a $6$? 
+    \item What is the expectation of the total of two dice given that the first die is a $6$? 
+    \item What is the variance of the total of two dice given that the first die is a $6$? 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: conditional distribution}
+We use $X_1$ to denote the value for the first die and $X_2$ the value for the second die. 
+\begin{itemize}
+    \item What is the probability that the total of two dice will be greater than $8$ given that the first die is a $6$? 
+    \begin{align*}
+        P(X_1 + X_2 > 8 \mid X_1 = 6) 
+            &= \frac{P(X_1 + X_2 > 8, X_1 = 6)}{P(X_1 = 6)} \\
+            &= \frac{P(X_1 = 6, X_2 > 2)}{P(X_1 = 6)} \\
+            &= \frac{P(X_1 = 6)P(X_2 > 2)}{P(X_1 = 6)} \\
+            &= P(X_2 > 2) = \frac{4}{6}. 
+    \end{align*}
+    % \item What is the expectation of the total of two dice given that the first die is a $6$? 
+    % \item What is the variance of the total of two dice given that the first die is a $6$? 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: conditional distribution}
+  \begin{itemize}
+    \item What is the expectation of the total of two dice given that the first die is a $6$? 
+    
+    Given that $X_1 = 6$, $X_1 + X_2$ can be $7, 8, 9, 10, 11, 12$, all with probability $\frac{1}{6}$. Thus 
+    \[
+        \expect[X_1 + X_2 \mid X_1 = 6] = 7*\frac{1}{6} + \cdots + 12*\frac{1}{6} = \frac{57}{6}.
+    \]
+    \item What is the variance of the total of two dice given that the first die is a $6$? Answer: $\frac{105}{36}$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Law of large number}
+    Consider i.i.d random variables $X_1, \cdots, X_n$, i.e., independent random variables with identical distributions, and an arbitrary function $g$. Suppose the common expectation $\expect[g(X_1)] < \infty$ and  common variance $\var[g(X_1)] < \infty$,
+    \[
+        \lim_{n \to \infty} \frac{1}{n}\sum_{i = 1}^n g(X_i) = \expect[g(X_1)].  
+    \]
+    
+    Actually 
+    \begin{itemize}
+        \item $\expect[\frac{1}{n}\sum_{i = 1}^n g(X_i)] = \expect[g(X_1)]$.
+        \item $\var[\frac{1}{n}\sum_{i = 1}^n g(X_i)] = \frac{1}{n}\var[g(X)]$.
+    \end{itemize}
+\end{frame}
+
+\section{Resources}
+\begin{frame}{Resources}
+\begin{itemize}
+    \item Linear algebra: \url{http://cs229.stanford.edu/summer2019/cs229-linalg.pdf}
+    \item Matrix calculus: \url{https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf}
+    \item Probability: \url{http://cs229.stanford.edu/summer2019/cs229-prob.pdf} and All of Statistics by Larry Wasserman. 
+\end{itemize}
+\end{frame}
+
+
+\end{document}
